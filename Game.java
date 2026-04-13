@@ -24,23 +24,26 @@ class Game {
     public Game() {
         this.CreateCards();
         this.Shuffle();
-
         this.discard = new ArrayDeque<>(DECK_SIZE);
         this.DealCards();
+    }
 
+    public void Start() {
+        PrintRules();
         Card firstCard = this.Draw();
-        System.out.println("First card: " + firstCard);
+        System.out.println("First card: [" + firstCard + "]\n");
         this.Discard(firstCard);
 
         in = new Scanner(System.in);
-        this.CPUTurn(in);
+        this.Turn(Player.CPU);
         in.close();
     }
 
-    public Card LastCard() { return this.discard.peek(); }
-    public Card Draw() { return this.deck.pop(); }
+    private Card LastCard() { return this.discard.peek(); }
+    private Card Draw() { return this.deck.pop(); }
+    private void Discard(Card card) { this.discard.push(card); }
 
-    public Card Draw(Player player) {
+    private Card Draw(Player player) {
         EmptyDeckCheck();
         Card card = this.deck.pop();
         if (player == Player.Player) {
@@ -50,8 +53,6 @@ class Game {
         }
         return card;
     }
-
-    private void Discard(Card card) { this.discard.push(card); }
 
     private void CreateCards() {
         Card[] deckArray = new Card[DECK_SIZE];
@@ -109,69 +110,92 @@ class Game {
         this.cpuHand = new ArrayList<>();
 
         for (int i = 0; i <= 13; i++) {
-            Card card = Draw();
-
-            if (i >= 7) {
-                cpuHand.add(card);
-            } else {
-                playerHand.add(card);
-            }
+            Player p = Player.values()[i % 2];
+            Draw(p);
         }
     }
 
-    private void PlayerTurn(Scanner in) {
+    private void Turn(Player player) {
+        boolean isPlayerTurn = player == Player.Player;
+
         if (LastCard().GetType() == Card.Type.DRAW2) {
-            Draw(Player.CPU);
-            Draw(Player.CPU);
+            Draw(player);
+            Draw(player);
         }
 
         if (LastCard().GetType() == Card.Type.DRAW4) {
-            Draw(Player.CPU);
-            Draw(Player.CPU);
-            Draw(Player.CPU);
-            Draw(Player.CPU);
+            Draw(player);
+            Draw(player);
+            Draw(player);
+            Draw(player);
         }
 
         ArrayList<Card> playables = new ArrayList<>();
-        
-        for (Card card : playerHand) {
+        ArrayList<Card> hand = isPlayerTurn ? playerHand : cpuHand;
+
+        for (Card card : hand) {
             if (card.CanPlayCard(LastCard())) {
                 playables.add(card);
             }
         }
-        
-        System.out.println(playerHand.size() + " cards in player hand. " + playables.size() + " playable cards.");
-        if (playables.size() == 0) {
-            boolean playableCardFound = false;
-            while (!playableCardFound) {
-                Card newCard = Draw();
-                if (newCard.CanPlayCard(this.LastCard())) {
-                    PlayCard(Player.Player, newCard);
-                    playableCardFound = true;
-                } else {                    
-                    playerHand.add(newCard);
-                }
-            }
 
-            CPUTurn(in);
-            return;
-        } else {
-            int i = 1;
-            for (Card card : playables) {
-                System.out.println("[" + i + "] " + card.toString());
-                i++;
+        System.out.println(hand.size() + " cards in " + player.toString() + " hand. " + playables.size() + " playable cards.");
+
+        if (isPlayerTurn) {
+            if (playables.size() == 0) {
+                boolean playableCardFound = false;
+                while (!playableCardFound) {
+                    Card newCard = Draw();
+                    if (newCard.CanPlayCard(this.LastCard())) {
+                        PlayCard(Player.Player, newCard);
+                        playableCardFound = true;
+                    } else {                    
+                        playerHand.add(newCard);
+                    }
+                }
+
+                Turn(Player.CPU);
+                return;
+            } else {
+                int i = 1;
+                for (Card card : playables) {
+                    System.out.println("[" + i + "] " + card.toString());
+                    i++;
+                }
+                
+                Card card = RequestPlayerCard(playables, in);
+                PlayCard(Player.Player, card);
             }
-            
-            Card card = RequestPlayerCard(playables, in);
-            PlayCard(Player.Player, card);
+        } else {
+            if (playables.size() == 0) {
+                Card newCard = Draw();
+
+                if (newCard.CanPlayCard(LastCard())) {
+                    PlayCard(Player.CPU, newCard);
+                } else {
+                    cpuHand.add(newCard);
+                    System.out.println("CPU could not play a card.\n");
+                    Turn(Player.Player);
+                    return;
+                }
+            } else {
+                Random random = new Random();
+                int rint = random.nextInt(playables.size());
+                Card card = playables.get(rint);
+                PlayCard(Player.CPU, card);
+            }
         }
-    
-        if (playerHand.size() == 0) {
-            System.out.println("Player wins!");
+
+        if (hand.size() == 0) {
+            System.out.println(player.toString() + " WINS!");
         } else {
             EmptyDeckCheck();
             System.out.println();
-            CPUTurn(in);
+            if (isPlayerTurn) {
+                Turn(Player.CPU);
+            } else {
+                Turn(Player.Player);
+            }
         }
     }
 
@@ -181,7 +205,7 @@ class Game {
             this.deck = this.discard;
             this.discard.clear();
             this.Shuffle();
-            this.discard.push(last);
+            this.Discard(last);
         }
     }
 
@@ -234,13 +258,13 @@ class Game {
                 Card.Color newColor = RequestColor(in);
                 card.SetColor(newColor);
                 playerHand.remove(card);
-                System.out.println("Player played [" + cardString + "] as " + newColor.toString() + "\n");
+                System.out.println("Player played [" + cardString + "] as " + newColor.toString());
             } else {
                 Random random = new Random();
                 Card.Color newColor = Card.Color.values()[random.nextInt(4)];
                 card.SetColor(newColor);
                 cpuHand.remove(card);
-                System.out.println("CPU played [" + cardString + "] as " + newColor.toString() + "\n");
+                System.out.println("CPU played [" + cardString + "] as " + newColor.toString());
             }
 
             this.discard.push(card);
@@ -258,52 +282,9 @@ class Game {
         this.discard.push(card);
     }
 
-    private void CPUTurn(Scanner in) {
-        if (LastCard().GetType() == Card.Type.DRAW2) {
-            Draw(Player.CPU);
-            Draw(Player.CPU);
-        }
-
-        if (LastCard().GetType() == Card.Type.DRAW4) {
-            Draw(Player.CPU);
-            Draw(Player.CPU);
-            Draw(Player.CPU);
-            Draw(Player.CPU);
-        }
-
-        ArrayList<Card> playables = new ArrayList<>();
-
-        for (Card card : cpuHand) {
-            if (card.CanPlayCard(LastCard())) {
-                playables.add(card);
-            }
-        }
-
-        System.out.println(playerHand.size() + " cards in CPU hand. " + playables.size() + " playable cards.");
-        if (playables.size() == 0) {
-            Card newCard = Draw();
-
-            if (newCard.CanPlayCard(LastCard())) {
-                PlayCard(Player.CPU, newCard);
-            } else {
-                cpuHand.add(newCard);
-                System.out.println("CPU could not play a card.\n");
-                PlayerTurn(in);
-                return;
-            }
-        } else {
-            Random random = new Random();
-            int rint = random.nextInt(playables.size());
-            Card card = playables.get(rint);
-            PlayCard(Player.CPU, card);
-        }
-
-        if (cpuHand.size() == 0) {
-            System.out.println("CPU wins!");
-        } else {
-            EmptyDeckCheck();
-            System.out.println();
-            PlayerTurn(in);
-        }
+    private void PrintRules() {
+        StringBuilder sb = new StringBuilder("Welcome to UNO!\n");
+        System.out.println(sb.toString());
+        // Add rules
     }
 }

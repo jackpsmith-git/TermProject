@@ -116,6 +116,7 @@ class Game {
     }
 
     private void Turn(Player player) {
+        System.out.println(this.deck.size() + " card(s) in deck, " + this.discard.size() + " card(s) in discard pile.");
         boolean isPlayerTurn = player == Player.Player;
 
         if (LastCard().GetType() == Card.Type.DRAW2) {
@@ -139,7 +140,7 @@ class Game {
             }
         }
 
-        System.out.println(hand.size() + " cards in " + player.toString() + " hand. " + playables.size() + " playable cards.");
+        System.out.println(hand.size() + " cards in " + player.toString() + " hand, " + playables.size() + " playable cards.");
 
         if (isPlayerTurn) {
             if (playables.size() == 0) {

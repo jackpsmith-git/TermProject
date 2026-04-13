@@ -49,11 +49,15 @@ public class Card {
             return true;
         }
 
-        if (this.GetType() == Type.NUMBER && this.GetValue() == previous.GetValue()) {
+        if (this.GetType() == Type.NUMBER && previous.GetType() == Type.NUMBER && this.GetValue() == previous.GetValue()) {
             return true;
         }
 
         if (this.GetType() != Type.NUMBER && this.GetType() == previous.GetType()) {
+            return true;
+        }
+
+        if (this.GetType() == Type.WILD) {
             return true;
         }
 

@@ -142,16 +142,19 @@ class Game {
         
         System.out.println(playerHand.size() + " cards in player hand. " + playables.size() + " playable cards.");
         if (playables.size() == 0) {
-            Card newCard = Draw();
-
-            if (newCard.CanPlayCard(LastCard())) {
-                PlayCard(Player.Player, newCard);
-            } else {
-                playerHand.add(newCard);
-                System.out.println("Player could not play a card.\n");
-                CPUTurn(in);
-                return;
+            boolean playableCardFound = false;
+            while (!playableCardFound) {
+                Card newCard = Draw();
+                if (newCard.CanPlayCard(this.LastCard())) {
+                    PlayCard(Player.Player, newCard);
+                    playableCardFound = true;
+                } else {                    
+                    playerHand.add(newCard);
+                }
             }
+
+            CPUTurn(in);
+            return;
         } else {
             int i = 1;
             for (Card card : playables) {
@@ -182,6 +185,28 @@ class Game {
         }
     }
 
+    private Card.Color RequestColor(Scanner in) {
+        Card.Color[] cols = Card.Color.values();
+        int idx;
+        for (int i = 0; i < cols.length - 1; i++) {
+            System.out.println(i + 1 + ". " + cols[i].toString());
+        }
+
+        do {
+            System.out.print("Choose a color for the wild card: ");
+            if (in.hasNextInt()) {
+                idx = in.nextInt();
+            } else {
+                idx = -1;
+                in.nextLine();
+            }
+
+            idx = idx - 1;
+        } while (idx < 0 || idx > cols.length - 1);
+
+        return cols[idx];
+    }
+
     private Card RequestPlayerCard(ArrayList<Card> playables, Scanner in) {
         Card card = playables.get(0);
         int idx;
@@ -204,17 +229,18 @@ class Game {
 
     private void PlayCard(Player player, Card card) {
         if (card.GetColor() == Card.Color.WILD) {
-            Random random = new Random();
-            Card.Color newColor = Card.Color.values()[random.nextInt(4)];
             String cardString = card.toString();
-            card.SetColor(newColor);
-
             if (player == Player.Player) {
+                Card.Color newColor = RequestColor(in);
+                card.SetColor(newColor);
                 playerHand.remove(card);
-                System.out.println("Player played [" + cardString + "] as " + newColor.toString());
+                System.out.println("Player played [" + cardString + "] as " + newColor.toString() + "\n");
             } else {
+                Random random = new Random();
+                Card.Color newColor = Card.Color.values()[random.nextInt(4)];
+                card.SetColor(newColor);
                 cpuHand.remove(card);
-                System.out.println("CPU played [" + cardString + "] as " + newColor.toString());
+                System.out.println("CPU played [" + cardString + "] as " + newColor.toString() + "\n");
             }
 
             this.discard.push(card);

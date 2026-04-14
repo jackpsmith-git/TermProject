@@ -1,6 +1,5 @@
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +15,7 @@ class Game {
 
     private final int DECK_SIZE = 108;
 
-    private enum Player {
+    public enum Player {
         Player,
         CPU
     }
@@ -60,47 +59,33 @@ class Game {
     }
 
     private void CreateCards() {
-        Card[] deckArray = new Card[DECK_SIZE];
+        this.deck = new ArrayDeque<>(DECK_SIZE);
         Card.Color[] cols = Card.Color.values();
 
-        int idx = 0;
-        for (int i = 0; i < cols.length - 1; i++) {
+        for (int i = 0; i < cols.length; i++) {
             Card.Color col = cols[i];
 
             for (int j = 1; j <= 2; j++) {
                 for (int k = 1; k <= 9; k++) {
                     Card card = new Card(col, Card.Type.NUMBER, k);
-                    deckArray[idx] = card;
-                    idx++;
+                    this.deck.push(card);
                 }
 
-                Card sc = new Card(col, Card.Type.SKIP, -1);
-                deckArray[idx] = sc;
-                idx++;
-                
-                Card rc = new Card(col, Card.Type.REVERSE, -1);
-                deckArray[idx] = rc;
-                idx++;
-
-                Card dtc = new Card(col, Card.Type.DRAW2, -1);
-                deckArray[idx] = dtc;
-                idx++;
+                Card skip = new Card(col, Card.Type.SKIP, -1);
+                this.deck.push(skip);
+                Card reverse = new Card(col, Card.Type.REVERSE, -1);
+                this.deck.push(reverse);
+                Card draw2 = new Card(col, Card.Type.DRAW2, -1);
+                this.deck.push(draw2);
             }
 
-            Card nc = new Card(col, Card.Type.NUMBER, 0);
-            deckArray[idx] = nc;
-            idx++;
-
-            Card dfc = new Card(Card.Color.WILD, Card.Type.DRAW4, 0);
-            deckArray[idx] = dfc;
-            idx++;
-
-            Card wc = new Card(Card.Color.WILD, Card.Type.WILD, -1);
-            deckArray[idx] = wc;
-            idx++;
+            Card zero = new Card(col, Card.Type.NUMBER, 0);
+            this.deck.push(zero);
+            Card draw4 = new Card(Card.Color.WILD, Card.Type.DRAW4, -1);
+            this.deck.push(draw4);
+            Card wild = new Card(Card.Color.WILD, Card.Type.WILD, -1);
+            this.deck.push(wild);
         }
-
-        this.deck = new ArrayDeque<>(Arrays.asList(deckArray));
     }
 
     private void Shuffle() {

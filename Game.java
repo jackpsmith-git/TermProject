@@ -132,10 +132,9 @@ class Game {
         }
 
         if (LastCard().GetType() == Card.Type.DRAW4) {
-            Draw(player, true);
-            Draw(player, true);
-            Draw(player, true);
-            Draw(player, true);
+            for (int i = 0; i <= 3; i++) {
+                Draw(player, true);
+            }
         }
 
         ArrayList<Card> playables = new ArrayList<>();
@@ -149,24 +148,28 @@ class Game {
 
         System.out.println(hand.size() + " cards in " + player.toString() + " hand, " + playables.size() + " playable cards.");
 
-        if (isPlayerTurn) {
-            if (playables.size() == 0) {
-                boolean playableCardFound = false;
-                while (!playableCardFound) {
-                    Card newCard = Draw();
-                    System.out.println("PLAYER drew a card.");
-                    if (newCard.CanPlayCard(this.LastCard())) {
-                        PlayCard(Player.Player, newCard);
-                        System.out.println();
-                        playableCardFound = true;
-                    } else {                    
-                        playerHand.add(newCard);
-                    }
+        if (playables.size() == 0) {
+            boolean playableCardFound = false;
+            while (!playableCardFound) {
+                Card newCard = Draw();
+                System.out.println(player.toString() + " drew a card.");
+                if (newCard.CanPlayCard(this.LastCard())) {
+                    PlayCard(player, newCard);
+                    System.out.println();
+                    playableCardFound = true;
+                } else {
+                    hand.add(newCard);
                 }
+            }
 
+            if (isPlayerTurn) {
                 Turn(Player.CPU);
-                return;
             } else {
+                Turn(Player.Player);
+            }
+            return;
+        } else {
+            if (isPlayerTurn) {
                 int i = 1;
                 for (Card card : playables) {
                     System.out.println("[" + i + "] " + card.toString());
@@ -175,24 +178,6 @@ class Game {
                 
                 Card card = RequestPlayerCard(playables, in);
                 PlayCard(Player.Player, card);
-            }
-        } else {
-            if (playables.size() == 0) {
-                boolean playableCardFound = false;
-                while (!playableCardFound) {
-                    Card newCard = Draw();
-                    System.out.println("CPU drew a card.");
-                    if (newCard.CanPlayCard(this.LastCard())) {
-                        PlayCard(Player.CPU, newCard);
-                        System.out.println();
-                        playableCardFound = true;
-                    } else {                    
-                        cpuHand.add(newCard);
-                    }
-                }
-
-                Turn(Player.Player);
-                return;
             } else {
                 Random random = new Random();
                 int rint = random.nextInt(playables.size());

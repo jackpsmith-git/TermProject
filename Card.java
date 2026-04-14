@@ -45,19 +45,10 @@ public class Card {
     }
 
     public boolean CanPlayCard(Card previous) {
-        if (this.GetColor() == previous.GetColor() || this.color == Color.WILD) {
-            return true;
-        }
-
-        if (this.GetType() == Type.NUMBER && previous.GetType() == Type.NUMBER && this.GetValue() == previous.GetValue()) {
-            return true;
-        }
-
-        if (this.GetType() != Type.NUMBER && this.GetType() == previous.GetType()) {
-            return true;
-        }
-
-        if (this.GetType() == Type.WILD) {
+        if ((this.GetColor() == previous.GetColor() || this.color == Color.WILD) ||
+            (this.GetType() == Type.NUMBER && previous.GetType() == Type.NUMBER && this.GetValue() == previous.GetValue()) ||
+            (this.GetType() != Type.NUMBER && this.GetType() == previous.GetType()) ||
+            (this.GetType() == Type.WILD)) {
             return true;
         }
 

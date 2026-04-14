@@ -11,7 +11,6 @@ public class DiscardPile {
     public Card GetLast() { return this.discard.peek(); }
     public void Discard(Card card) { this.discard.push(card); }
     public Card Pop() { return this.discard.pop(); }
-    public void Push(Card card) { this.discard.push(card); }
     public void Clear() { this.discard.clear(); }
     public int Size() { return this.discard.size(); }
 }

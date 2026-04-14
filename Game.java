@@ -22,6 +22,7 @@ class Game {
     }
 
     public Game() {
+        PrintRules();
         this.CreateCards();
         this.Shuffle();
         this.discard = new ArrayDeque<>(DECK_SIZE);
@@ -29,7 +30,6 @@ class Game {
     }
 
     public void Start() {
-        PrintRules();
         Card firstCard = this.Draw();
         System.out.println("First card: [" + firstCard + "]\n");
         this.Discard(firstCard);
@@ -40,16 +40,21 @@ class Game {
     }
 
     private Card LastCard() { return this.discard.peek(); }
-    private Card Draw() { return this.deck.pop(); }
+    private Card Draw() { 
+        EmptyDeckCheck();
+        return this.deck.pop();
+    }
     private void Discard(Card card) { this.discard.push(card); }
 
-    private Card Draw(Player player) {
+    private Card Draw(Player player, boolean log) {
         EmptyDeckCheck();
         Card card = this.deck.pop();
         if (player == Player.Player) {
             playerHand.add(card);
+            if (log) System.out.println("PLAYER drew a card.");
         } else {
             cpuHand.add(card);
+            if (log) System.out.println("CPU drew a card.");
         }
         return card;
     }
@@ -99,10 +104,12 @@ class Game {
     }
 
     private void Shuffle() {
+        System.out.println("Shuffling deck...");   
         List<Card> list = new ArrayList<>(this.deck);
         Collections.shuffle(list);
         this.deck.clear();
-        this.deck.addAll(list);    
+        this.deck.addAll(list);
+        System.out.println("Deck shuffled.\n");
     }
 
     private void DealCards() {
@@ -111,7 +118,7 @@ class Game {
 
         for (int i = 0; i <= 13; i++) {
             Player p = Player.values()[i % 2];
-            Draw(p);
+            Draw(p, false);
         }
     }
 
@@ -120,15 +127,15 @@ class Game {
         boolean isPlayerTurn = player == Player.Player;
 
         if (LastCard().GetType() == Card.Type.DRAW2) {
-            Draw(player);
-            Draw(player);
+            Draw(player, true);
+            Draw(player, true);
         }
 
         if (LastCard().GetType() == Card.Type.DRAW4) {
-            Draw(player);
-            Draw(player);
-            Draw(player);
-            Draw(player);
+            Draw(player, true);
+            Draw(player, true);
+            Draw(player, true);
+            Draw(player, true);
         }
 
         ArrayList<Card> playables = new ArrayList<>();
@@ -147,8 +154,10 @@ class Game {
                 boolean playableCardFound = false;
                 while (!playableCardFound) {
                     Card newCard = Draw();
+                    System.out.println("PLAYER drew a card.");
                     if (newCard.CanPlayCard(this.LastCard())) {
                         PlayCard(Player.Player, newCard);
+                        System.out.println();
                         playableCardFound = true;
                     } else {                    
                         playerHand.add(newCard);
@@ -169,16 +178,21 @@ class Game {
             }
         } else {
             if (playables.size() == 0) {
-                Card newCard = Draw();
-
-                if (newCard.CanPlayCard(LastCard())) {
-                    PlayCard(Player.CPU, newCard);
-                } else {
-                    cpuHand.add(newCard);
-                    System.out.println("CPU could not play a card.\n");
-                    Turn(Player.Player);
-                    return;
+                boolean playableCardFound = false;
+                while (!playableCardFound) {
+                    Card newCard = Draw();
+                    System.out.println("CPU drew a card.");
+                    if (newCard.CanPlayCard(this.LastCard())) {
+                        PlayCard(Player.CPU, newCard);
+                        System.out.println();
+                        playableCardFound = true;
+                    } else {                    
+                        cpuHand.add(newCard);
+                    }
                 }
+
+                Turn(Player.Player);
+                return;
             } else {
                 Random random = new Random();
                 int rint = random.nextInt(playables.size());
@@ -202,6 +216,7 @@ class Game {
 
     private void EmptyDeckCheck() {
         if (this.deck.size() == 0) {
+            System.out.println("Deck empty. Reshuffling discard pile into deck.");
             Card last = this.discard.pop();
             this.deck = this.discard;
             this.discard.clear();

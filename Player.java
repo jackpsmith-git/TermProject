@@ -22,8 +22,7 @@ public class Player {
         if (log) System.out.println(this.toString() + " drew a card.");
     }
 
-    public boolean TakeTurn(Deck deck, Scanner in) {
-        deck.PrintSize();
+    protected void DrawCheck(Deck deck) {
         if (deck.Last().GetType() == Card.Type.DRAW2) {
             this.DrawCard(deck, true);
             this.DrawCard(deck, true);
@@ -34,9 +33,10 @@ public class Player {
                 this.DrawCard(deck, true);
             }
         }
+    }
 
+    protected ArrayList<Card> GetPlayables(Deck deck) {
         ArrayList<Card> playables = new ArrayList<>();
-        
         for (Card card : this.hand) {
             if (card.CanPlayCard(deck.Last())) {
                 playables.add(card);
@@ -44,33 +44,25 @@ public class Player {
         }
 
         System.out.println(this.hand.size() + " cards in " + this.toString() + " hand, " + playables.size() + " playable cards.");
-    
-        if (playables.size() == 0) {
-            boolean playableCardFound = false;
-            while (!playableCardFound) {
-                Card newCard = deck.Draw();
-                System.out.println(this.toString() + " drew a card.");
-                if (newCard.CanPlayCard(deck.Last())) {
-                    this.PlayCard(newCard, deck, in);
-                    System.out.println();
-                    playableCardFound = true;
-                } else {
-                    this.hand.add(newCard);
-                }
-            }
+        return playables;
+    }
 
-            return false;
-        } else {
-            int i = 1;
-            for (Card card : playables) {
-                System.out.println("[" + i + "] " + card.toString());
-                i++;
+    protected void NoPlayablesFound(Deck deck, Scanner in) {
+        boolean playableCardFound = false;
+        while (!playableCardFound) {
+            Card newCard = deck.Draw();
+            System.out.println(this.toString() + " drew a card.");
+            if (newCard.CanPlayCard(deck.Last())) {
+                this.PlayCard(newCard, deck, in);
+                System.out.println();
+                playableCardFound = true;
+            } else {
+                this.hand.add(newCard);
             }
-            
-            Card card = this.RequestPlayerCard(playables, in);
-            this.PlayCard(card, deck, in);
         }
+    }
 
+    protected boolean EndGameCheck() {
         if (this.hand.size() == 0) {
             System.out.println(this.toString() + " WINS!");
             return true;
@@ -78,6 +70,33 @@ public class Player {
             System.out.println();
             return false;
         }
+    }
+
+    public boolean TakeTurn(Deck deck, Scanner in) {
+        deck.PrintSize();
+        this.DrawCheck(deck);
+
+        ArrayList<Card> playables = this.GetPlayables(deck);
+        
+        if (playables.size() == 0) {
+            this.NoPlayablesFound(deck, in);
+            return false;
+        } else {
+            ChooseCard(deck, in, playables);
+        }
+
+        return this.EndGameCheck();
+    }
+
+    protected void ChooseCard(Deck deck, Scanner in, ArrayList<Card> playables) {
+        int i = 1;
+        for (Card card : playables) {
+            System.out.println("[" + i + "] " + card.toString());
+            i++;
+        }
+        
+        Card card = this.RequestPlayerCard(playables, in);
+        this.PlayCard(card, deck, in);
     }
 
     public void PlayCard(Card card, Deck deck, Scanner in) {

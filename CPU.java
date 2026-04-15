@@ -59,7 +59,7 @@ public class CPU extends Player {
         }
 
         if (this.hand.size() == 0) {
-            System.out.println(this.toString() + "WINS!");
+            System.out.println(this.toString() + " WINS!");
             return true;
         } else {
             System.out.println();

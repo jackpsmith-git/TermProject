@@ -10,15 +10,14 @@ class Game {
     public Game() {
         PrintRules();
         this.deck = new Deck();
-
         this.player = new Player();
-        player.DrawHand(this.deck);
-
         this.cpu = new CPU();
-        cpu.DrawHand(this.deck);
     }
 
     public void Start() {
+        player.DrawHand(this.deck);
+        cpu.DrawHand(this.deck);
+
         Card firstCard = this.deck.Draw();
         System.out.println("First card: [" + firstCard + "]\n");
         this.deck.Discard(firstCard);

@@ -22,7 +22,7 @@ public class Player {
         if (log) System.out.println(this.toString() + " drew a card.");
     }
 
-    protected void DrawCheck(Deck deck) {
+    private void DrawCheck(Deck deck) {
         if (deck.Last().GetType() == Card.Type.DRAW2) {
             this.DrawCard(deck, true);
             this.DrawCard(deck, true);
@@ -35,7 +35,7 @@ public class Player {
         }
     }
 
-    protected ArrayList<Card> GetPlayables(Deck deck) {
+    private ArrayList<Card> GetPlayables(Deck deck) {
         ArrayList<Card> playables = new ArrayList<>();
         for (Card card : this.hand) {
             if (card.CanPlayCard(deck.Last())) {
@@ -47,7 +47,7 @@ public class Player {
         return playables;
     }
 
-    protected void NoPlayablesFound(Deck deck, Scanner in) {
+    private void NoPlayablesFound(Deck deck, Scanner in) {
         boolean playableCardFound = false;
         while (!playableCardFound) {
             Card newCard = deck.Draw();
@@ -62,7 +62,7 @@ public class Player {
         }
     }
 
-    protected boolean EndGameCheck() {
+    private boolean EndGameCheck() {
         if (this.hand.size() == 0) {
             System.out.println(this.toString() + " WINS!");
             return true;

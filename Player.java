@@ -3,14 +3,13 @@ import java.util.Scanner;
 
 public class Player {
     protected ArrayList<Card> hand;
+    
     public Player() {
         this.hand = new ArrayList<>(7);
     }
 
     @Override
-    public String toString() {
-        return "PLAYER";
-    }
+    public String toString() { return "PLAYER"; }
 
     public void DrawHand(Deck deck) {
         for (int i = 0; i <= 6; i++) {
@@ -84,10 +83,13 @@ public class Player {
     public void PlayCard(Card card, Deck deck, Scanner in) {
         if (card.GetColor() == Card.Color.WILD) {
             String cardString = card.toString();
+
             Card.Color newColor = RequestColor(in);
             card.SetColor(newColor);
+
             this.hand.remove(card);
             System.out.println(this.toString() + " played [" + cardString + "] as " + newColor.toString());
+            
             deck.Discard(card);
             return;
         }

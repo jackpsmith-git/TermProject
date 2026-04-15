@@ -21,21 +21,8 @@ public class CPU extends Player {
     }
 
     @Override
-    public void PlayCard(Card card, Deck deck, Scanner in) {
-        if (card.GetColor() == Card.Color.WILD) {
-            String cardString = card.toString();
-            Random random = new Random();
-            Card.Color newColor = Card.Color.values()[random.nextInt(4)];
-            card.SetColor(newColor);
-            this.hand.remove(card);
-            System.out.println("CPU played [" + cardString + "] as " + newColor.toString());
-            
-            deck.Discard(card);
-            return;
-        }
-
-        this.hand.remove(card);
-        System.out.println(this.toString() + " played [" + card.toString() + "]");
-        deck.Discard(card);
+    protected Card.Color GetColor(Scanner in) {
+        Random random = new Random();
+        return Card.Color.values()[random.nextInt(4)];
     }
 }

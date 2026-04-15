@@ -103,12 +103,11 @@ public class Player {
         if (card.GetColor() == Card.Color.WILD) {
             String cardString = card.toString();
 
-            Card.Color newColor = RequestColor(in);
+            Card.Color newColor = GetColor(in);
             card.SetColor(newColor);
-
+            
             this.hand.remove(card);
             System.out.println(this.toString() + " played [" + cardString + "] as " + newColor.toString());
-            
             deck.Discard(card);
             return;
         }
@@ -116,6 +115,10 @@ public class Player {
         this.hand.remove(card);
         System.out.println(this.toString() + " played [" + card.toString() + "]");
         deck.Discard(card);
+    }
+
+    protected Card.Color GetColor(Scanner in) {
+        return this.RequestColor(in);
     }
 
     private Card RequestPlayerCard(ArrayList<Card> playables, Scanner in) {

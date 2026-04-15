@@ -3,14 +3,12 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class CPU extends Player {
-        public CPU() {
+    public CPU() {
         super();
     }
 
     @Override
-    public String toString() {
-        return "CPU";
-    }
+    public String toString() { return "CPU"; }
 
     @Override
     protected void ChooseCard(Deck deck, Scanner in, ArrayList<Card> playables) {

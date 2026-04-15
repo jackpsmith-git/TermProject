@@ -118,7 +118,25 @@ public class Player {
     }
 
     protected Card.Color GetColor(Scanner in) {
-        return this.RequestColor(in);
+        Card.Color[] cols = Card.Color.values();
+        int idx;
+        for (int i = 0; i < cols.length - 1; i++) {
+            System.out.println(i + 1 + ". " + cols[i].toString());
+        }
+
+        do {
+            System.out.print("Choose a color for the wild card: ");
+            if (in.hasNextInt()) {
+                idx = in.nextInt();
+            } else {
+                idx = -1;
+                in.nextLine();
+            }
+
+            idx = idx - 1;
+        } while (idx < 0 || idx > cols.length - 1);
+
+        return cols[idx];
     }
 
     private Card RequestPlayerCard(ArrayList<Card> playables, Scanner in) {
@@ -139,27 +157,5 @@ public class Player {
 
         card = playables.get(idx);
         return card;
-    }
-
-    private Card.Color RequestColor(Scanner in) {
-        Card.Color[] cols = Card.Color.values();
-        int idx;
-        for (int i = 0; i < cols.length - 1; i++) {
-            System.out.println(i + 1 + ". " + cols[i].toString());
-        }
-
-        do {
-            System.out.print("Choose a color for the wild card: ");
-            if (in.hasNextInt()) {
-                idx = in.nextInt();
-            } else {
-                idx = -1;
-                in.nextLine();
-            }
-
-            idx = idx - 1;
-        } while (idx < 0 || idx > cols.length - 1);
-
-        return cols[idx];
     }
 }

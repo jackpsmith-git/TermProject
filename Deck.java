@@ -22,6 +22,11 @@ public class Deck {
     public void Discard(Card card) { this.discard.push(card); }
     public Card Last() { return this.discard.peek(); }
 
+    private void CreateCard(Card.Color color, Card.Type type, int value) {
+        Card card = new Card(color, type, value);
+        this.deck.push(card);
+    }
+
     private void CreateCards() {
         this.deck = new ArrayDeque<>(DECK_SIZE);
         Card.Color[] cols = Card.Color.values();
@@ -31,24 +36,17 @@ public class Deck {
 
             for (int j = 1; j <= 2; j++) {
                 for (int k = 1; k <= 9; k++) {
-                    Card card = new Card(col, Card.Type.NUMBER, k);
-                    this.deck.push(card);
+                    this.CreateCard(col, Card.Type.NUMBER, k);
                 }
 
-                Card skip = new Card(col, Card.Type.SKIP, -1);
-                this.deck.push(skip);
-                Card reverse = new Card(col, Card.Type.REVERSE, -1);
-                this.deck.push(reverse);
-                Card draw2 = new Card(col, Card.Type.DRAW2, -1);
-                this.deck.push(draw2);
+                this.CreateCard(col, Card.Type.SKIP, -1);
+                this.CreateCard(col, Card.Type.REVERSE, -1);
+                this.CreateCard(col, Card.Type.DRAW2, -1);
             }
 
-            Card zero = new Card(col, Card.Type.NUMBER, 0);
-            this.deck.push(zero);
-            Card draw4 = new Card(Card.Color.WILD, Card.Type.DRAW4, -1);
-            this.deck.push(draw4);
-            Card wild = new Card(Card.Color.WILD, Card.Type.WILD, -1);
-            this.deck.push(wild);
+            this.CreateCard(col, Card.Type.NUMBER, 0);
+            this.CreateCard(Card.Color.WILD, Card.Type.DRAW4, -1);
+            this.CreateCard(Card.Color.WILD, Card.Type.WILD, -1);
         }
     }
 
@@ -73,6 +71,8 @@ public class Deck {
     }
 
     public void PrintSize() {
-        System.out.println(this.deck.size() + " card(s) in deck, " + this.discard.size() + " card(s) in discard pile.");
+        System.out.println(this.deck.size() + 
+        " card(s) in deck, " + this.discard.size() + 
+        " card(s) in discard pile.");
     }
 }

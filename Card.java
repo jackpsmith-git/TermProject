@@ -30,7 +30,8 @@ public class Card {
         this.value = value;
     }
 
-    @Override public String toString() {
+    @Override 
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.color.toString().toUpperCase());
         if (this.type == Type.NUMBER) {
@@ -42,6 +43,10 @@ public class Card {
         return sb.toString();
     }
 
+    /**
+     * @param previous the previous card that was played
+     * @return true if this card can be played, otherwise false
+     */
     public boolean CanPlayCard(Card previous) {
         if ((this.color == previous.color || this.color == Color.WILD) ||
             (this.type == Type.NUMBER && previous.type == Type.NUMBER && this.value == previous.value) ||

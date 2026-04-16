@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-class Game {
+public class Game {
     private Deck deck;
     private Player player;
     private CPU cpu;

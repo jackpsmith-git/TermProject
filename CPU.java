@@ -10,6 +10,9 @@ public class CPU extends Player {
     @Override
     public String toString() { return "CPU"; }
 
+    /**
+     * Chooses a playable card at random from the CPU's hand and plays it
+     */
     @Override
     protected void ChooseCard(Deck deck, Scanner in, ArrayList<Card> playables) {
         Random random = new Random();
@@ -19,7 +22,7 @@ public class CPU extends Player {
     }
 
     @Override
-    protected Card.Color GetColor(Scanner in) {
+    protected Card.Color ChooseColor(Scanner in) {
         Random random = new Random();
         return Card.Color.values()[random.nextInt(4)];
     }

@@ -11,17 +11,30 @@ public class Player {
     @Override
     public String toString() { return "PLAYER"; }
 
+    /**
+     * Draws seven cards from the deck and pushes them to this player's hand
+     * @param deck
+     */
     public void DrawHand(Deck deck) {
         for (int i = 0; i <= 6; i++) {
             this.DrawCard(deck, false);
         }
     }
 
+    /**
+     * Draws a card from the deck and pushes it to this player's hand
+     * @param deck
+     * @param log if true, will print a message stating this player drew a card
+     */
     public void DrawCard(Deck deck, boolean log) {
         this.hand.add(deck.Draw());
         if (log) System.out.println(this.toString() + " drew a card.");
     }
 
+    /**
+     * Checks if the last card played was a Draw2 or Draw4 card. If it was, draws the corresponding number of cards and pushes them to this player's hand
+     * @param deck
+     */
     private void DrawCheck(Deck deck) {
         if (deck.Last().GetType() == Card.Type.DRAW2) {
             this.DrawCard(deck, true);
@@ -35,6 +48,10 @@ public class Player {
         }
     }
 
+    /**
+     * @param deck
+     * @return an ArrayList containing the playable cards in this player's hand
+     */
     private ArrayList<Card> GetPlayables(Deck deck) {
         ArrayList<Card> playables = new ArrayList<>();
         for (Card card : this.hand) {
@@ -47,6 +64,11 @@ public class Player {
         return playables;
     }
 
+    /**
+     * Draws cards until a playable card is found and then plays it
+     * @param deck
+     * @param in
+     */
     private void NoPlayablesFound(Deck deck, Scanner in) {
         boolean playableCardFound = false;
         while (!playableCardFound) {
@@ -62,6 +84,9 @@ public class Player {
         }
     }
 
+    /**
+     * @return true if this player's hand is empty, otherwise false
+     */
     private boolean EndGameCheck() {
         if (this.hand.size() == 0) {
             System.out.println(this.toString() + " WINS!");
@@ -72,6 +97,11 @@ public class Player {
         }
     }
 
+    /**
+     * @param deck
+     * @param in
+     * @return true if this player won the game, otherwise false
+     */
     public boolean TakeTurn(Deck deck, Scanner in) {
         deck.PrintSize();
         this.DrawCheck(deck);
@@ -88,6 +118,12 @@ public class Player {
         return this.EndGameCheck();
     }
 
+    /**
+     * Prompts the player to choose a playable card from their hand and plays is
+     * @param deck
+     * @param in
+     * @param playables
+     */
     protected void ChooseCard(Deck deck, Scanner in, ArrayList<Card> playables) {
         int i = 1;
         for (Card card : playables) {
@@ -95,7 +131,7 @@ public class Player {
             i++;
         }
         
-        Card card = this.RequestPlayerCard(playables, in);
+        Card card = this.RequestCard(playables, in);
         this.PlayCard(card, deck, in);
     }
 
@@ -103,7 +139,7 @@ public class Player {
         if (card.GetColor() == Card.Color.WILD) {
             String cardString = card.toString();
 
-            Card.Color newColor = GetColor(in);
+            Card.Color newColor = ChooseColor(in);
             card.SetColor(newColor);
             
             this.hand.remove(card);
@@ -117,7 +153,7 @@ public class Player {
         deck.Discard(card);
     }
 
-    protected Card.Color GetColor(Scanner in) {
+    protected Card.Color ChooseColor(Scanner in) {
         Card.Color[] cols = Card.Color.values();
         int idx;
         for (int i = 0; i < cols.length - 1; i++) {
@@ -139,7 +175,13 @@ public class Player {
         return cols[idx];
     }
 
-    private Card RequestPlayerCard(ArrayList<Card> playables, Scanner in) {
+    /**
+     * Prompts the player to choose a card from their hand to play
+     * @param playables
+     * @param in
+     * @return chosen card
+     */
+    private Card RequestCard(ArrayList<Card> playables, Scanner in) {
         Card card = playables.get(0);
         int idx;
         do {

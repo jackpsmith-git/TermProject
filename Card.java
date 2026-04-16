@@ -7,12 +7,39 @@ public class Card {
     public void SetColor(Color color) { this.color = color; }
     public Type GetType() { return this.type; }
 
+    public final static  String ANSI_GREEN = "\u001B[32m";
+    public final static String ANSI_RED = "\u001B[31m";
+    public final static String ANSI_BLUE = "\u001B[34m";
+    public final static String ANSI_YELLOW = "\u001B[33m";
+    public final static String ANSI_RESET = "\u001B[0m";
+
     public enum Color {
         RED,
         BLUE,
         GREEN,
         YELLOW,
         WILD,
+    }
+
+    public static String GetAnsiCode(Color col) {
+        String colorCode = "";
+        switch (col) {
+            case Card.Color.RED:
+                colorCode = Card.ANSI_RED;
+                break;
+            case Card.Color.BLUE:
+                colorCode = Card.ANSI_BLUE;
+                break;
+            case Card.Color.GREEN:
+                colorCode = Card.ANSI_GREEN;
+                break;
+            case Card.Color.YELLOW:
+                colorCode = Card.ANSI_YELLOW;
+                break;
+            case Card.Color.WILD:
+                break;
+        }
+        return colorCode;
     }
 
     public enum Type {
@@ -32,14 +59,13 @@ public class Card {
 
     @Override 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.color.toString().toUpperCase());
+        StringBuilder sb = new StringBuilder(GetAnsiCode(this.color));
         if (this.type == Type.NUMBER) {
-            sb.append(" " + this.value);
+            sb.append(this.value);
         } else {
-            sb.append(" " + this.type.toString());
+            sb.append(this.type.toString());
         }
-
+        sb.append(ANSI_RESET);
         return sb.toString();
     }
 

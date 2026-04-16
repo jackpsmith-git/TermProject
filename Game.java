@@ -19,8 +19,12 @@ public class Game {
         cpu.DrawHand(this.deck);
 
         Card firstCard = this.deck.Draw();
-        System.out.println("First card: [" + firstCard + "]\n");
         this.deck.Discard(firstCard);
+        while (firstCard.GetType() == Card.Type.DRAW2 || firstCard.GetType() == Card.Type.DRAW4) {
+            firstCard = this.deck.Draw();
+            this.deck.Discard(firstCard);
+        }
+        System.out.println("First card: [" + firstCard + "]\n");
 
         int turn = 0;
         boolean gameOver = false;

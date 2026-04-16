@@ -149,7 +149,8 @@ public class Player {
             card.SetColor(newColor);
             
             this.hand.remove(card);
-            System.out.println(this.toString() + " played [" + cardString + "] as " + newColor.toString());
+            String colorCode = Card.GetAnsiCode(newColor);
+            System.out.println(this.toString() + " played [" + cardString + "] as " + colorCode + newColor.toString() + Card.ANSI_RESET);
             deck.Discard(card);
             return;
         }
@@ -168,7 +169,8 @@ public class Player {
         Card.Color[] cols = Card.Color.values();
         int idx;
         for (int i = 0; i < cols.length - 1; i++) {
-            System.out.println(i + 1 + ". " + cols[i].toString());
+            Card.Color col = cols[i];
+            System.out.println(i + 1 + ". " + Card.GetAnsiCode(col) + col.toString() + Card.ANSI_RESET);
         }
 
         do {

@@ -18,7 +18,7 @@ This version of UNO is single-player against the CPU.
         * wild (x2)
 * The player and the CPU each start with 7 cards in their hand.
 * The discard pile starts with one card.
-* The CPU starts the game which actually gives the player a slight advantage. We don't check if it is the first turn or not, so if the card that starts in the discard pile happens to be a draw 4 or draw 2 card, the CPU must draw extra cards on the first turn.
+* The CPU starts the game.
 * The player and CPU take turns playing cards from their hand until one of them has no cards remaining.
 
 ### Playing cards

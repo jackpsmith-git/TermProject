@@ -18,7 +18,16 @@ public class Deck {
      * @return the top card from the deck
      */
     public Card Draw() {
-        this.EmptyDeckCheck();
+        if (this.deck.size() == 0) {
+            System.out.println("Deck empty. Reshuffling discard pile into deck.");
+            Card last = this.discard.pop();
+            for (int i = 0; i < this.discard.size(); i++) {
+                this.deck.push(this.discard.pop());
+            }
+            this.Shuffle();
+            this.Discard(last);
+        }
+
         return this.deck.pop();
     }
 
@@ -42,7 +51,6 @@ public class Deck {
     private void CreateCard(Card.Color color, Card.Type type, int value) {
         Card card = new Card(color, type, value);
         this.deck.push(card);
-        System.out.println(card.toString());
     }
 
     /**
@@ -78,20 +86,6 @@ public class Deck {
         this.deck.clear();
         this.deck.addAll(list);
         System.out.println("Deck shuffled.\n");
-    }
-
-    /**
-     * Checks if the deck is empty. If it is, stores the top card of the discard pile, pushes the rest of the discard pile to the deck stack, shuffles the deck stack, and restores the previously played card to the discard stack
-     */
-    private void EmptyDeckCheck() {
-        if (this.deck.size() == 0) {
-            System.out.println("Deck empty. Reshuffling discard pile into deck.");
-            Card last = this.discard.pop();
-            this.deck = this.discard;
-            this.discard.clear();
-            this.Shuffle();
-            this.Discard(last);
-        }
     }
 
     /**

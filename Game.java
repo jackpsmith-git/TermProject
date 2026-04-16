@@ -6,12 +6,13 @@ public class Game {
     private CPU cpu;
 
     boolean isPlayerTurn = false;
+    Scanner in;
 
-    public Game() {
-        PrintRules();
+    public Game(Scanner in) {
         this.deck = new Deck();
         this.player = new Player();
         this.cpu = new CPU();
+        this.in = in;
     }
 
     public void Start() {
@@ -28,17 +29,9 @@ public class Game {
 
         int turn = 0;
         boolean gameOver = false;
-        Scanner in = new Scanner(System.in);
         while (!gameOver) {
-            gameOver = turn % 2 == 0 ? cpu.TakeTurn(deck, in) : player.TakeTurn(deck, in);
+            gameOver = turn % 2 == 0 ? cpu.TakeTurn(deck, this.in) : player.TakeTurn(deck, this.in);
             if (deck.Last().GetType() != Card.Type.SKIP) turn++;
         }
-        in.close();
-    }
-
-    private void PrintRules() {
-        StringBuilder sb = new StringBuilder("Welcome to UNO!\n");
-        System.out.println(sb.toString());
-        // Add rules
     }
 }

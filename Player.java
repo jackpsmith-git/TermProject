@@ -135,6 +135,12 @@ public class Player {
         this.PlayCard(card, deck, in);
     }
 
+    /**
+     * Removes a card from this player's hand and pushes it to the discard stack
+     * @param card
+     * @param deck
+     * @param in
+     */
     public void PlayCard(Card card, Deck deck, Scanner in) {
         if (card.GetColor() == Card.Color.WILD) {
             String cardString = card.toString();
@@ -153,6 +159,11 @@ public class Player {
         deck.Discard(card);
     }
 
+    /**
+     * Prompts the player to choose a color for the previously played wild card
+     * @param in
+     * @return chosen color
+     */
     protected Card.Color ChooseColor(Scanner in) {
         Card.Color[] cols = Card.Color.values();
         int idx;

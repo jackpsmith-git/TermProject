@@ -44,6 +44,3 @@ The game ends when either the player or the CPU have no cards left in their hand
 - Jack Smith
 - Sasha Kulo
 - Dan Ingunza
-
-## TO DO:
-* Implement skip cards

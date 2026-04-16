@@ -31,7 +31,7 @@ public class Game {
         Scanner in = new Scanner(System.in);
         while (!gameOver) {
             gameOver = turn % 2 == 0 ? cpu.TakeTurn(deck, in) : player.TakeTurn(deck, in);
-            turn++;
+            if (deck.Last().GetType() != Card.Type.SKIP) turn++;
         }
         in.close();
     }

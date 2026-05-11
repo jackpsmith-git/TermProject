@@ -11,6 +11,19 @@ public class Player {
     @Override
     public String toString() { return "PLAYER"; }
 
+    private String HandAsString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < this.hand.size(); i++) {
+            Card card = this.hand.get(i);
+            sb.append(card.toString());
+            if (i != this.hand.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
     /**
      * Draws seven cards from the deck and pushes them to this player's hand
      * @param deck
@@ -114,7 +127,7 @@ public class Player {
         } else {
             ChooseCard(deck, in, playables);
         }
-
+        
         return this.EndGameCheck();
     }
 
@@ -125,7 +138,9 @@ public class Player {
      * @param playables
      */
     protected void ChooseCard(Deck deck, Scanner in, ArrayList<Card> playables) {
+        System.out.println("Hand: " + this.HandAsString());
         int i = 1;
+        System.out.println("Playable Cards:");
         for (Card card : playables) {
             System.out.println("[" + i + "] " + card.toString());
             i++;

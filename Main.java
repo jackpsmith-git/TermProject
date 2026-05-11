@@ -14,7 +14,8 @@ public class Main {
             String response;
             do {
                 System.out.print("Play again? [Y/N]: ");
-                response = in.nextLine().strip();
+                response = in.nextLine();
+                response = response.strip();
             } while (!response.equalsIgnoreCase("Y") && !response.equalsIgnoreCase("N"));
 
             newGame = response.equalsIgnoreCase("Y");
